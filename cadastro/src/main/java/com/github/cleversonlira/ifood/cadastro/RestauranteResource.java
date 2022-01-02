@@ -20,7 +20,9 @@ import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
+import com.github.cleversonlira.ifood.cadastro.dto.AdicionarPratoDTO;
 import com.github.cleversonlira.ifood.cadastro.dto.AdicionarRestauranteDTO;
+import com.github.cleversonlira.ifood.cadastro.dto.PratoMapper;
 import com.github.cleversonlira.ifood.cadastro.dto.RestauranteMapper;
 
 
@@ -31,7 +33,10 @@ import com.github.cleversonlira.ifood.cadastro.dto.RestauranteMapper;
 public class RestauranteResource {
 	
 	@Inject
-	RestauranteMapper mapper;
+	RestauranteMapper retauranteMapper;
+	
+	@Inject
+	PratoMapper pratoMapper;
 
 	@GET
 	public List<Restaurante> listar() {
@@ -41,19 +46,20 @@ public class RestauranteResource {
 	@POST
 	@Transactional
 	public Response adicionar(AdicionarRestauranteDTO dto) {
-		mapper.toEntity(dto).persist();
+		retauranteMapper.toEntity(dto).persist();
 		return Response.status(Status.CREATED).build();
 	}
 
 	@PUT
 	@Path("{id}")
 	@Transactional
-	public void atualizar(@PathParam("id") Long id, Restaurante dto) {
+	public void atualizar(@PathParam("id") Long id, AdicionarRestauranteDTO dto) {
+		Restaurante restaurante = retauranteMapper.toEntity(dto);
 		Optional<Restaurante> restauranteOptional = Restaurante.findByIdOptional(id);
 		if (restauranteOptional.isEmpty()) {
 			throw new NotFoundException();
 		}
-		restauranteOptional.get().nome = dto.nome;
+		restauranteOptional.get().nome = restaurante.nome;
 	}
 
 	@DELETE
@@ -99,12 +105,12 @@ public class RestauranteResource {
 	@Path("{idRestaurante}/pratos/")
 	@Transactional
 	@Tag(name = "Prato")
-	public Response adicionar(@PathParam("idRestaurante") Long idRestaurante, Prato dto) {
+	public Response adicionar(@PathParam("idRestaurante") Long idRestaurante, AdicionarPratoDTO dto) {
 		Optional<Restaurante> restauranteOptional = Restaurante.findByIdOptional(idRestaurante);
 		if (restauranteOptional.isEmpty()) {
 			throw new NotFoundException("Restaurante não existe");
 		}
-		dto.persist();
+		pratoMapper.toEntity(dto).persist();
 		return Response.status(Status.CREATED).build();
 	}
 
@@ -112,7 +118,7 @@ public class RestauranteResource {
 	@Path("{idRestaurante}/pratos/{id}")	
 	@Transactional
 	@Tag(name = "Prato")
-	public void atualizar(@PathParam("idRestaurante") Long idRestaurante, @PathParam("id") Long id, Prato dto) {
+	public void atualizar(@PathParam("idRestaurante") Long idRestaurante, @PathParam("id") Long id, AdicionarPratoDTO dto) {
 		Optional<Restaurante> restauranteOptional = Restaurante.findByIdOptional(idRestaurante);
 		if (restauranteOptional.isEmpty()) {
 			throw new NotFoundException("Restaurante não existe");
