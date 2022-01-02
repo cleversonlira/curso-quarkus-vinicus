@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -23,6 +24,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import com.github.cleversonlira.ifood.cadastro.dto.AdicionarPratoDTO;
 import com.github.cleversonlira.ifood.cadastro.dto.AdicionarRestauranteDTO;
 import com.github.cleversonlira.ifood.cadastro.dto.PratoMapper;
+import com.github.cleversonlira.ifood.cadastro.dto.RestauranteDTO;
 import com.github.cleversonlira.ifood.cadastro.dto.RestauranteMapper;
 
 
@@ -33,20 +35,20 @@ import com.github.cleversonlira.ifood.cadastro.dto.RestauranteMapper;
 public class RestauranteResource {
 	
 	@Inject
-	RestauranteMapper retauranteMapper;
+	RestauranteMapper restauranteMapper;
 	
 	@Inject
 	PratoMapper pratoMapper;
 
 	@GET
-	public List<Restaurante> listar() {
-		return Restaurante.listAll();
+	public List<RestauranteDTO> listar() {
+		return restauranteMapper.toListDTO(Restaurante.listAll());
 	}
 
 	@POST
 	@Transactional
-	public Response adicionar(AdicionarRestauranteDTO dto) {
-		retauranteMapper.toEntity(dto).persist();
+	public Response adicionar(@Valid AdicionarRestauranteDTO dto) {
+		restauranteMapper.toEntity(dto).persist();
 		return Response.status(Status.CREATED).build();
 	}
 
@@ -54,12 +56,13 @@ public class RestauranteResource {
 	@Path("{id}")
 	@Transactional
 	public void atualizar(@PathParam("id") Long id, AdicionarRestauranteDTO dto) {
-		Restaurante restaurante = retauranteMapper.toEntity(dto);
 		Optional<Restaurante> restauranteOptional = Restaurante.findByIdOptional(id);
 		if (restauranteOptional.isEmpty()) {
 			throw new NotFoundException();
 		}
-		restauranteOptional.get().nome = restaurante.nome;
+		Restaurante restaurante = restauranteOptional.get(); 
+		restauranteMapper.toEntity(dto, restaurante);
+		restaurante.persist();
 	}
 
 	@DELETE
@@ -108,9 +111,11 @@ public class RestauranteResource {
 	public Response adicionar(@PathParam("idRestaurante") Long idRestaurante, AdicionarPratoDTO dto) {
 		Optional<Restaurante> restauranteOptional = Restaurante.findByIdOptional(idRestaurante);
 		if (restauranteOptional.isEmpty()) {
-			throw new NotFoundException("Restaurante não existe");
+			throw new NotFoundException("Restauratruente não existe");
 		}
-		pratoMapper.toEntity(dto).persist();
+		Prato entity = pratoMapper.toEntity(dto);
+		entity.restaurante = Restaurante.findById(idRestaurante);		
+		entity.persist();
 		return Response.status(Status.CREATED).build();
 	}
 
