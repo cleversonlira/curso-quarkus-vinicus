@@ -1,4 +1,4 @@
-package com.github.cleversonlira.ifood.cadastro;
+package com.github.cleversonlira.ifood.cadastro.interfaces;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,13 +19,19 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
-import com.github.cleversonlira.ifood.cadastro.dto.AdicionarPratoDTO;
-import com.github.cleversonlira.ifood.cadastro.dto.AdicionarRestauranteDTO;
-import com.github.cleversonlira.ifood.cadastro.dto.PratoMapper;
-import com.github.cleversonlira.ifood.cadastro.dto.RestauranteDTO;
-import com.github.cleversonlira.ifood.cadastro.dto.RestauranteMapper;
+import com.github.cleversonlira.ifood.cadastro.application.config.ConstraintViolationResponse;
+import com.github.cleversonlira.ifood.cadastro.application.dto.RestauranteDTO;
+import com.github.cleversonlira.ifood.cadastro.domain.Prato;
+import com.github.cleversonlira.ifood.cadastro.domain.Restaurante;
+import com.github.cleversonlira.ifood.cadastro.interfaces.dto.AdicionarPratoDTO;
+import com.github.cleversonlira.ifood.cadastro.interfaces.dto.AdicionarRestauranteDTO;
+import com.github.cleversonlira.ifood.cadastro.interfaces.dto.PratoMapper;
+import com.github.cleversonlira.ifood.cadastro.interfaces.dto.RestauranteMapper;
 
 
 @Path("/restaurantes")
@@ -47,6 +53,8 @@ public class RestauranteResource {
 
 	@POST
 	@Transactional
+	@APIResponse(responseCode = "201", description = "Caso seja cadastrado com sucesso")
+	@APIResponse(responseCode = "400", content = @Content(schema = @Schema(allOf = ConstraintViolationResponse.class)))
 	public Response adicionar(@Valid AdicionarRestauranteDTO dto) {
 		restauranteMapper.toEntity(dto).persist();
 		return Response.status(Status.CREATED).build();
@@ -55,7 +63,7 @@ public class RestauranteResource {
 	@PUT
 	@Path("{id}")
 	@Transactional
-	public void atualizar(@PathParam("id") Long id, AdicionarRestauranteDTO dto) {
+	public void atualizar(@PathParam("id") Long id, @Valid AdicionarRestauranteDTO dto) {
 		Optional<Restaurante> restauranteOptional = Restaurante.findByIdOptional(id);
 		if (restauranteOptional.isEmpty()) {
 			throw new NotFoundException();
@@ -108,7 +116,7 @@ public class RestauranteResource {
 	@Path("{idRestaurante}/pratos/")
 	@Transactional
 	@Tag(name = "Prato")
-	public Response adicionar(@PathParam("idRestaurante") Long idRestaurante, AdicionarPratoDTO dto) {
+	public Response adicionar(@PathParam("idRestaurante") Long idRestaurante, @Valid AdicionarPratoDTO dto) {
 		Optional<Restaurante> restauranteOptional = Restaurante.findByIdOptional(idRestaurante);
 		if (restauranteOptional.isEmpty()) {
 			throw new NotFoundException("Restauratruente não existe");
@@ -123,7 +131,7 @@ public class RestauranteResource {
 	@Path("{idRestaurante}/pratos/{id}")	
 	@Transactional
 	@Tag(name = "Prato")
-	public void atualizar(@PathParam("idRestaurante") Long idRestaurante, @PathParam("id") Long id, AdicionarPratoDTO dto) {
+	public void atualizar(@PathParam("idRestaurante") Long idRestaurante, @PathParam("id") Long id, @Valid AdicionarPratoDTO dto) {
 		Optional<Restaurante> restauranteOptional = Restaurante.findByIdOptional(idRestaurante);
 		if (restauranteOptional.isEmpty()) {
 			throw new NotFoundException("Restaurante não existe");

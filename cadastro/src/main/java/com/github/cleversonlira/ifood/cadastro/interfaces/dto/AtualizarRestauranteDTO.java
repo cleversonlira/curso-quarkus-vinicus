@@ -1,4 +1,4 @@
-package com.github.cleversonlira.ifood.cadastro.dto;
+package com.github.cleversonlira.ifood.cadastro.interfaces.dto;
 
 public class AtualizarRestauranteDTO {
 	public String nomeFantasia;

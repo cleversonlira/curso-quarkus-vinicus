@@ -1,4 +1,4 @@
-package com.github.cleversonlira.ifood.cadastro;
+package com.github.cleversonlira.ifood.cadastro.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

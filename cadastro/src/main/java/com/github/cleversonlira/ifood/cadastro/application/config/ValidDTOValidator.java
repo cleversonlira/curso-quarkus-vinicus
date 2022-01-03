@@ -1,4 +1,4 @@
-package com.github.cleversonlira.ifood.cadastro.config;
+package com.github.cleversonlira.ifood.cadastro.application.config;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

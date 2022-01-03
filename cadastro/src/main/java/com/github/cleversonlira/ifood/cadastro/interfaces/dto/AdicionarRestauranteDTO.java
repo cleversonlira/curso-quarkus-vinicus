@@ -1,12 +1,12 @@
-package com.github.cleversonlira.ifood.cadastro.dto;
+package com.github.cleversonlira.ifood.cadastro.interfaces.dto;
 
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import com.github.cleversonlira.ifood.cadastro.Restaurante;
-import com.github.cleversonlira.ifood.cadastro.config.DTO;
+import com.github.cleversonlira.ifood.cadastro.application.config.DTO;
+import com.github.cleversonlira.ifood.cadastro.domain.Restaurante;
 
 public class AdicionarRestauranteDTO implements DTO {
 

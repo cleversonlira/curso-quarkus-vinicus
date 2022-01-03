@@ -1,13 +1,13 @@
-package com.github.cleversonlira.ifood.cadastro.dto;
+package com.github.cleversonlira.ifood.cadastro.interfaces.dto;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 
 import javax.validation.ConstraintValidatorContext;
 
-import com.github.cleversonlira.ifood.cadastro.Prato;
-import com.github.cleversonlira.ifood.cadastro.config.DTO;
-import com.github.cleversonlira.ifood.cadastro.config.ValidDTO;
+import com.github.cleversonlira.ifood.cadastro.application.config.DTO;
+import com.github.cleversonlira.ifood.cadastro.application.config.ValidDTO;
+import com.github.cleversonlira.ifood.cadastro.domain.Prato;
 
 @ValidDTO
 public class AdicionarPratoDTO implements DTO {

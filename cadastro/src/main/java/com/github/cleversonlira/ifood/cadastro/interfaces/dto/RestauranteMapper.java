@@ -1,4 +1,4 @@
-package com.github.cleversonlira.ifood.cadastro.dto;
+package com.github.cleversonlira.ifood.cadastro.interfaces.dto;
 
 import java.util.List;
 
@@ -6,7 +6,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-import com.github.cleversonlira.ifood.cadastro.Restaurante;
+import com.github.cleversonlira.ifood.cadastro.application.dto.RestauranteDTO;
+import com.github.cleversonlira.ifood.cadastro.domain.Restaurante;
 
 @Mapper(componentModel = "cdi")
 public interface RestauranteMapper {
